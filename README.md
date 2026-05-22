@@ -30,6 +30,45 @@ Server starts at `http://localhost:8080` by default.
 
 ---
 
+## Docker
+
+```bash
+# 1. Copy env file and fill in credentials
+cp .env.example .env
+
+# 2. Build the image
+docker build -t courier-integration .
+
+# 3. Run the container
+docker run -d \
+  --name courier_integration \
+  -p 8080:8080 \
+  --env-file .env \
+  -e NODE_ENV=production \
+  -e DB_PATH=/app/data/courier_integration.db \
+  -v courier_db:/app/data \
+  courier-integration
+```
+
+App runs at `http://localhost:8080`. The `-v courier_db:/app/data` volume persists the SQLite database across restarts.
+
+```bash
+# View logs
+docker logs -f courier_integration
+
+# Open shell inside container
+docker exec -it courier_integration sh
+
+# Stop
+docker stop courier_integration
+
+# Remove container + volume (wipes DB)
+docker rm courier_integration
+docker volume rm courier_db
+```
+
+---
+
 ## Environment Variables
 
 | Variable | Default | Description |
